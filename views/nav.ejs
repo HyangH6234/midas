@@ -1,0 +1,22 @@
+<header class="navbar">
+  <div class="logo"><a href="/">MIDAS</a></div>
+  <ul class="links">
+    
+    <li><a href="/location">Location</a></li>
+    <li><a href="/about">About</a></li>
+    <li><a href="/board">Board</a></li>
+    <li><a href="/mypage">Mypage</a></li>
+  </ul>
+  <div style="display: flex; gap: 1.4rem;">
+    <% if (loginUserName) { %>
+      <span class="action_btn" style="background: none; color: lightgreen; cursor: default;">
+        <%= loginUserName + '님 환영합니다.' %>
+      </span>
+      <a href="/logout" class="action_btn">로그아웃</a>
+    <% } else { %>
+      <a href="/login" class="action_btn">Login</a>
+      
+   
+    <% } %>
+  </div>
+</header>

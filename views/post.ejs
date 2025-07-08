@@ -1,0 +1,95 @@
+<%# ---------------------------------------------------------
+    post.ejs: 게시글 상세 + 댓글 보기 뷰
+    - content: { no, title, content, created_at, name, user_id }
+    - comments: [{ id, content, user_id, created_at, commenter }]
+    - loginUserId, loginUserName: 세션 정보
+--------------------------------------------------------- %>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <%# 문서 제목으로 게시글 제목 사용 %>
+  <title><%= content.title %> - MIDAS</title>
+  <!-- Bootstrap CSS -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    crossorigin="anonymous"
+  >
+</head>
+<body>
+  <%# 공통 내비게이션 바 %>
+  <%- include('nav') %>
+
+  <div class="container w-75 m-auto my-4">
+    <!-- ① 게시글 제목 -->
+    <h2 class="mt-4"><%= content.title %></h2>
+    <!-- ② 작성자 및 작성일 -->
+    <div class="text-secondary mb-3">
+      작성자: <%= content.name %> |
+      작성일: <%= content.created_at.toISOString().slice(0,19).replace('T',' ') %>
+    </div>
+    <!-- ③ 본문 -->
+    <div class="bg-light p-4 rounded shadow-sm mb-4">
+      <%= content.content %>
+    </div>
+    <!-- ④ 수정 버튼: 본인 글만 보임 -->
+    <div class="mb-4 text-end">
+      <% if (content.user_id === loginUserId) { %>
+        <a href="/board/<%= content.no %>/edit" class="btn btn-outline-dark btn-sm">수정</a>
+      <% } %>
+      <a href="/board" class="btn btn-outline-dark btn-sm ms-2">목록으로</a>
+    </div>
+
+    <!-- ⑤ 댓글 섹션 -->
+    <div class="mb-2"><strong>댓글</strong></div>
+    <!-- ⑤-1 댓글 쓰기 폼 (로그인 시만) -->
+    <% if (loginUserName) { %>
+      <div class="mb-4 p-3 bg-light rounded shadow-sm">
+        <form action="/comments" method="POST">
+          <%# postNo 필드에 게시글 no (PK) 전달 %>
+          <input type="hidden" name="postNo" value="<%= content.no %>">
+          <div class="form-floating mb-2">
+            <textarea
+              class="form-control"
+              id="floatingComment"
+              name="content"
+              placeholder="댓글을 입력하세요"
+              style="height: 80px"
+              required
+            ></textarea>
+            <label for="floatingComment">댓글 작성</label>
+          </div>
+          <div class="text-end">
+            <button class="btn btn-secondary btn-sm">등록</button>
+          </div>
+        </form>
+      </div>
+    <% } %>
+
+    <!-- ⑤-2 댓글 목록 -->
+    <ul class="list-unstyled">
+      <% comments.forEach(cmt => { %>
+        <li class="mb-3 p-3 bg-light rounded shadow-sm">
+          <div class="mb-1"><strong><%= cmt.commenter %></strong>
+            <span class="text-secondary ms-2">
+              <%= cmt.created_at.toISOString().slice(0,19).replace('T',' ') %>
+            </span>
+          </div>
+          <div><%= cmt.content %></div>
+        </li>
+      <% }) %>
+      <% if (comments.length === 0) { %>
+        <li class="text-secondary">등록된 댓글이 없습니다.</li>
+      <% } %>
+    </ul>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
+    crossorigin="anonymous"
+  ></script>
+</body>
+</html>

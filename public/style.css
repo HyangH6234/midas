@@ -1,0 +1,455 @@
+/* ==========================================================================  
+   1. 초기화 및 기본 설정  
+   ========================================================================== */
+
+
+   * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+html, body {
+  height: 100%;
+  font-family: 'Open Sans', sans-serif;
+  color: #fff;
+  overflow-x: hidden;
+}
+
+/* ==========================================================================  
+   2. Locomotive Scroll 컨테이너  
+   ========================================================================== */
+#scroll-wrapper {
+  position: relative;
+  overflow: hidden;
+  scrollbar-width: none;            /* Firefox */
+}
+#scroll-wrapper::-webkit-scrollbar {
+  display: none;                    /* Chrome/Safari */
+}
+
+/* ==========================================================================  
+   3. 페이지별 배경  
+   ========================================================================== */
+
+/* 1) 컨테이너 세팅 */
+.midas-page {
+  position: relative;
+  overflow: hidden;
+}
+
+/* 2) 배경이미지 패닝/줌 애니메이션 */
+.bg-aurora {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 120vw;   /* 살짝 크게 잡아야 패닝 시 빈틈이 안 생깁니다 */
+  height: 120vh;
+  background: url('https://cdn.pixabay.com/photo/2020/03/24/20/53/aurora-borealis-4965488_1280.jpg') 
+  center/cover no-repeat;
+  transform: translate(-50%, -50%) scale(1);
+  animation: aurora-pan 40s ease-in-out infinite alternate;
+  z-index: -1;
+}
+
+/* 3) 애니메이션 키프레임 */
+@keyframes aurora-pan {
+  0%   { transform: translate(-50%, -50%) scale(1); }
+  25%  { transform: translate(-60%, -40%) scale(1.05); }
+  50%  { transform: translate(-60%, -40%) scale(1.1); }
+  75%  { transform: translate(-50%, -50%) scale(1.05); }
+  100% { transform: translate(-50%, -50%) scale(1); }
+}
+/* ==========================================================================  
+   4. 네비게이션 바  
+   ========================================================================== */
+.navbar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 10;
+
+  /* 별헤는 밤 같은 짙은 남색 + 60% 투명도 */
+  background-color: rgba(144, 156, 171, 0.261);
+
+  /* 뒤 배경이 살짝 흐려보이도록 블러 효과 추가 */
+  backdrop-filter: blur(8px);
+
+  /* 기존 레이아웃 스타일 유지 */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 60px;
+  padding: 0 2rem;
+}
+.navbar .logo a {
+  color: #fff;
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-decoration: none;
+}
+.navbar .links {
+  display: flex;
+  list-style: none;
+  gap: 2rem;
+}
+.navbar .links a {
+
+  color: #fff;
+  text-decoration: none;
+  font-size: 1.2rem;
+  transition: color .3s;
+}
+.navbar .links a:hover {
+  color: rgb(63, 222, 105);
+}
+.action_btn {
+  text-decoration: none;
+  background: orange;
+  color: #fff;
+  padding: .5rem 1rem;
+  border-radius: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform .2s, box-shadow .2s;
+}
+.action_btn:hover {
+  transform: scale(.95);
+  box-shadow: 0 4px 10px rgba(0,0,0,.3);
+}
+
+/* ==========================================================================  
+   5. Hero / 메인 영역  
+   ========================================================================== */
+.hero {
+  height: calc(100vh - 60px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 1rem;
+}
+.hero h1 { font-size: 3rem; margin-bottom: 1rem; }
+.hero p { font-size: 1.2rem; max-width: 600px; }
+
+/* ==========================================================================  
+   6. 로그인/회원가입 폼  
+   ========================================================================== */
+.form-container {
+  max-width: 400px;
+  margin: 100px auto;
+  background:  #ffcb57;
+  padding: 2rem;
+  border-radius: 10px;
+  text-align: center;
+}
+.form-container input,
+.form-container select {
+  width: 100%;
+  padding: 10px;
+  margin: .5rem 0;
+  border: none;
+  border-radius: 5px;
+}
+.form-container button {
+  background: #ffcb57;
+  color: #fff;
+  padding: .7rem 1.5rem;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* ==========================================================================  
+   7. 지도 오버레이 (location 페이지)  
+   ========================================================================== */
+
+
+/* 위치 페이지 전체를 감싸는 컨테이너 */
+.location-page {
+  position: relative;   /* bg-location 이 절대위치로 들어올 것이므로 */
+  overflow: hidden;     /* 잘라내기 */
+}
+
+/* bg-location */
+.location-page .bg-location {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 120%;     /* 필요에 따라 좀 더 크게 */
+  height: 120%;
+  background-image: url('https://www.hanwhaaerospace.com/assets/content/main/mission-03.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  transform: translate(-50%, -50%) scale(1);
+  animation: aurora-pan 60s ease-in-out infinite;
+  z-index: -1;     /* 콘텐츠보다 뒤에 */
+}
+
+/* 키프레임: 천천히 이동·확대·축소 반복 */
+@keyframes aurora-pan {
+  0%   { transform: translate(-50%, -50%) scale(1); }
+  25%  { transform: translate(-52%, -48%) scale(1.02); }
+  50%  { transform: translate(-50%, -50%) scale(1.04); }
+  75%  { transform: translate(-48%, -52%) scale(1.02); }
+  100% { transform: translate(-50%, -50%) scale(1); }
+}
+
+   .map-overlay {
+  width: 90%;
+  max-width: 1300px;
+  height: 800px;
+  margin: 2rem auto;
+  position: relative;
+  z-index: 1;
+}
+#map {
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,.3);
+}
+.map-buttons {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+}
+.map-buttons button {
+  padding: 10px 20px;
+  background: #d49466;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* ==========================================================================  
+   8. About 페이지 스크롤 애니메이션 섹션  
+   ========================================================================== */
+/* 공통 섹션 레이아웃 */
+.section {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+/* Intro 메시지 */
+.section--intro {
+  height: 70vh;
+  text-align: center;
+  overflow: hidden;
+}
+  .section--intro .slideshow {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+/* 2) 슬라이드 레이어 */
+.section--intro .slide {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  animation: slidefade 10s infinite ease-in-out;
+}
+
+/* 3) 각 슬라이드별 시작 시점 (2초 간격) */
+.section--intro .slide:nth-child(1) { animation-delay: 0s; }
+.section--intro .slide:nth-child(2) { animation-delay: 3s; }
+.section--intro .slide:nth-child(3) { animation-delay: 6s; }
+
+/* 4) 키프레임: 각 슬라이드가 2초간 보였다가 천천히 사라지도록 */
+@keyframes slidefade {
+  /* 0%~16.6%: 페이드 인 (≈1초) */
+  0%   { opacity: 0; }
+  16.6%{ opacity: 1; }
+  /* 16.6%~49.9%: 유지 (≈2초) */
+  49.9%{ opacity: 1; }
+  /* 49.9%~66.6%: 페이드 아웃 (≈1초) */
+  66.6%{ opacity: 0; }
+  /* 나머지: 투명 유지 */
+  100% { opacity: 0; }
+}
+.about-top-message {
+  font-size: 2rem;
+  font-weight: bold;
+  line-height: 1.6;
+  text-shadow: 0 2px 8px rgba(0,0,0,.6);
+}
+
+/* Split 섹션 (이미지 + 텍스트) */
+.section--split {
+  background: #fff;
+  padding: 120px 10%;
+}
+.split-container {
+  display: flex;
+  gap: 4rem;
+  max-width: 1300px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+}
+.split-image{
+  flex: 0 0 50%;
+}
+.split-image img {
+  width: 100%;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0,0,0,.5);
+}
+.split-text { flex: 1; color: #333; }
+.split-title {
+  font-size: 3rem;
+  color: #222;
+  margin-bottom: 1rem;
+}
+.split-desc {
+  font-size: 1.8rem;
+  line-height: 1.8;
+  color: #222;
+}
+/* 반투명 오버레이 
+.section--split::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,.6);
+  z-index: 1;
+}*/
+
+/* ==========================================================================  
+   9. (옵션) 섹션별 배경 이미지  
+   ========================================================================== */
+/*
+.section--split:nth-of-type(2) {
+  background: url('/about1.png') center/cover no-repeat;
+}
+.section--split:nth-of-type(3) {
+  background: url('/about2.png') center/cover no-repeat;
+}
+.section--split:nth-of-type(4) {
+  background: url('/about3.png') center/cover no-repeat;
+}
+*/
+
+/*  join -------------------------------------- */
+
+.join-page .finisher-header, .login-page .finisher-header{
+  background-color: transparent;
+}
+/* finisher-header 내부 폼 오버라이드 */
+/* finisher-header 기본 (화면 전체를 덮고 가운데 정렬) */
+.finisher-header {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 100vh;                 /* 뷰포트 높이만큼 */
+  display: flex;                 /* Flexbox */
+  justify-content: center;       /* 가로 중앙 정렬 */
+  align-items: center;           /* 세로 중앙 정렬 */
+  background-color: #9138e5;     /* JS 로딩 전 잠깐 보일 배경색 */
+}
+
+/* 캔버스는 뒤로 */
+.finisher-header canvas {
+  position: absolute !important;
+  top: -20%;
+  left: -20%;
+  width: 140% !important;
+  height: 140% !important;
+  transform-origin: top left !important;
+  z-index: 0;
+}
+
+/* 폼 컨테이너는 앞쪽에 표시 */
+.finisher-header .form-container {
+  position: relative;
+  z-index: 1;
+  max-width: 400px;
+  width: 90%;
+  background: rgba(255,255,255,0.1);
+  padding: 2rem;
+  border-radius: 10px;
+  color: #fff;
+  text-align: center;
+}
+
+/* 폼 내부 요소 스타일 */
+.finisher-header .form-container input,
+.finisher-header .form-container select {
+  width: 100%;
+  padding: 10px;
+  margin: 0.5rem 0;
+  border: none;
+  border-radius: 5px;
+}
+
+.finisher-header .form-container button {
+  background:  #ffc547;
+  color: white;
+  padding: 0.7rem 1.5rem;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* 게시판 전용 스타일 */
+.board-section {
+  padding: 2rem 1rem;
+  max-width: 800px;
+  margin: 0 auto;
+  color: #fff;
+}
+
+.board-section .board-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.board-section .board-header h1 {
+  font-size: 2rem;
+  margin: 0;
+}
+
+.board-section .board-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.board-section .board-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+}
+
+.board-section .board-list li a {
+  flex: 1;
+  color: #fff;
+  text-decoration: none;
+  font-size: 1.1rem;
+}
+
+.board-section .board-list li span {
+  font-size: 0.9rem;
+  color: rgba(255,255,255,0.7);
+  margin-left: 1rem;
+}
+.board-empty {
+  text-align: center;
+  margin-top: 2rem;
+  color: rgba(255,255,255,0.7);
+  font-size: 1.1rem;
+}
+/* 수정 */

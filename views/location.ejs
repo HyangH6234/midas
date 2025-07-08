@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>MIDAS - Location</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="/style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body class="location-page">
+  <div class="bg-location"></div>
+  <%- include('nav') %>
+
+  <main>
+    <section class="hero">
+      <h1>Smart Glove Location</h1>
+      <p><%= loginUserName %>님, 아래에서 장갑의 위치를 확인할 수 있습니다.</p>
+
+      <div class="map-overlay">
+        <div id="map"></div>
+        <div class="map-buttons">
+          <button id="directionBtn">이 위치로 길찾기</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+<% if (lat && lng) { %>
+  <script
+    type="text/javascript"
+    src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=g3fd40yb47"
+  ></script>
+  <script>
+    // 서버에서 받은 lat/lng
+    let lat = <%= lat %>;
+    let lng = <%= lng %>;
+
+    // 지도 생성
+    const map = new naver.maps.Map('map', {
+      center: new naver.maps.LatLng(lat, lng),
+      zoom: 15,
+    });
+
+    new naver.maps.Marker({
+      position: new naver.maps.LatLng(lat, lng),
+      map: map,
+      title: '스마트장갑 위치 (테스트)',
+    });
+
+    // 길찾기 버튼 클릭 핸들러
+    document
+      .getElementById('directionBtn')
+      .addEventListener('click', (e) => {
+        e.preventDefault();
+
+        if (!navigator.geolocation) {
+          return alert('이 브라우저는 위치 정보를 지원하지 않습니다.');
+        }
+
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            console.log('내 위치 좌표:', pos.coords);
+            const slat = pos.coords.latitude;
+            const slng = pos.coords.longitude;
+            const dlat = <%= lat %>;
+            const dlng = <%= lng %>;
+
+            const url =
+              `https://map.naver.com/index.nhn?` +
+              `slng=${slng}&slat=${slat}` +
+              `&elng=${dlng}&elat=${dlat}` +
+              `&stext=${encodeURIComponent('내 위치')}` +
+              `&etext=${encodeURIComponent('장갑 위치')}` +
+              `&pathType=0&showMap=true&menu=route`;
+
+            console.log('길찾기 URL:', url);
+            window.open(url, '_blank');
+          },
+          (err) => {
+            alert('현재 위치를 가져올 수 없습니다.');
+          },
+          {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 0,
+          }
+        );
+      });
+  </script>
+<% } %>
+
+</body>
+
+</html>

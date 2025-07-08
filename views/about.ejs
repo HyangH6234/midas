@@ -1,0 +1,174 @@
+<!-- views/about.ejs -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About MIDAS</title>
+  <!-- 공통 스타일 -->
+  <link rel="stylesheet" href="/style.css" />
+  <!-- Locomotive Scroll CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/locomotive-scroll@4.1.3/dist/locomotive-scroll.min.css" />
+  <!-- FontAwesome -->
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body class="about-page">
+  <%- include('nav') %>
+
+  <div id="scroll-wrapper" data-scroll-container>
+    <!-- Section 1: 상단 소개 -->
+    <section class="section section--intro">
+     <div class="slideshow">
+        <div class="slide" style="background-image:url('https://www.hanwhaaerospace.com/assets/content/whyweexist/kv1.jpg?v=1')"></div>
+        <div class="slide" style="background-image:url('https://www.hanwhaaerospace.com/assets/content/whyweexist/kv2.jpg')"></div>
+        <div class="slide" style="background-image:url('https://www.hanwhaaerospace.com/assets/content/whyweexist/kv3.jpg')"></div>
+      </div>
+      <div class="intro-overlay">
+        <div class="container">
+          <p class="about-top-message">
+            미다스는 스마트 장갑을 통해<br>
+            모두가 신뢰할 수 있는<br>
+            가치를 만들어 갑니다.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 2: Smart Sensor Integration -->
+    <section class="section section--split">
+      <div class="split-container">
+        <div class="split-image">
+          <img src="/장갑01.jpg" alt="MIDAS 센서 이미지">
+        </div>
+        <div class="split-text">
+          <h2 class="split-title">Smart Sensor<br>Integration</h2>
+          <p class="split-desc">
+            유연한 센서를 통해 손의 움직임을 감지하고,<br>
+            다양한 데이터를 수집해 행동 패턴을 분석합니다.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 3: AI-Based Behavior Detection -->
+    <section class="section section--split">
+      <div class="split-container">
+        <div class="split-image">
+          <img src="/장갑02.jpg" alt="MIDAS AI 기능 이미지">
+        </div>
+        <div class="split-text">
+          <h2 class="split-title">Anomaly<br>Detection</h2>
+          <p class="split-desc">
+            AI가 이상행동을 판단하고<br>
+            긴급상황 발생 시 즉시 신호를 전송합니다.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 4: Real-Time Location Sharing -->
+    <section class="section section--split">
+      <div class="split-container">
+        <div class="split-image">
+          <img src="/장갑03.jpg" alt="MIDAS 위치 전송 기능 이미지">
+        </div>
+        <div class="split-text">
+          <h2 class="split-title">Real-Time<br>Location Sharing</h2>
+          <p class="split-desc">
+            BLE와 스마트폰 GPS를 연동해<br>
+            보호자에게 현재 위치를 실시간으로 전달합니다.
+          </p>
+        </div>
+      </div>
+    </section>
+    <section class="section section--split">
+      <div class="split-container">
+        <div class="split-image">
+          <img src="/장갑04.jpg" alt="MIDAS 위치 전송 기능 이미지">
+        </div>
+        <div class="split-text">
+          <h2 class="split-title">Quick<br>Snapshat</h2>
+          <p class="split-desc">
+            중지손가락을 구부리면 카메라가 자동실행되어<br>
+            결정적인 순간을 놓치지 않고 즉시 기록합니다.
+          </p>
+        </div>
+      </div>
+    </section>
+    <section class="section section--split">
+      <div class="split-container">
+        <div class="split-image">
+          <img src="/장갑05.jpg" alt="MIDAS 위치 전송 기능 이미지">
+        </div>
+        <div class="split-text">
+          <h2 class="split-title">Safety<br>Alert</h2>
+          <p class="split-desc">
+            약지손가락을 구부릴시 <br>
+            블루투스 스피커에서 위험을 경고해줍니다.
+          </p>
+        </div>
+      </div>
+    </section>
+  </div><!-- /#scroll-wrapper -->
+
+  <!-- GSAP & Locomotive Scroll Scripts -->
+  <script src="https://unpkg.com/gsap@3.12.2/dist/gsap.min.js"></script>
+  <script src="https://unpkg.com/gsap@3.12.2/dist/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/locomotive-scroll@4.1.3/dist/locomotive-scroll.min.js"></script>
+  <script>
+    gsap.registerPlugin(ScrollTrigger);
+
+    const loco = new LocomotiveScroll({
+      el: document.querySelector("#scroll-wrapper"),
+      smooth: true,
+      multiplier: 1.2
+    });
+    loco.on("scroll", ScrollTrigger.update);
+    ScrollTrigger.scrollerProxy("#scroll-wrapper", {
+      scrollTop(value) {
+        return arguments.length
+          ? loco.scrollTo(value, { duration: 0, disableLerp: true })
+          : loco.scroll.instance.scroll.y;
+      },
+      getBoundingClientRect() {
+        return { top: 0, left: 0, width: window.innerWidth, height: window.innerHeight };
+      },
+      pinType: document.querySelector("#scroll-wrapper").style.transform ? "transform" : "fixed"
+    });
+    ScrollTrigger.addEventListener("refresh", () => loco.update());
+    ScrollTrigger.refresh();
+
+    // animate each split-container
+    gsap.utils.toArray(".split-container").forEach(container => {
+      gsap.from(container, {
+        scrollTrigger: {
+          trigger: container,
+          scroller: "#scroll-wrapper",
+          start: "top 80%",
+          toggleActions: "play reverse play reverse"
+        },
+        opacity: 0,
+        y: 80,
+        duration: 1,
+        ease: "power3.out"
+      });
+    });
+    // animate intro message
+    gsap.from(".about-top-message", {
+      scrollTrigger: {
+        trigger: ".about-top-message",
+        scroller: "#scroll-wrapper",
+        start: "top 90%",
+        toggleActions: "play reverse play reverse"
+      },
+      opacity: 0,
+      y: 60,
+      duration: 1,
+      ease: "power2.out"
+    });
+  </script>
+</body>
+</html>
