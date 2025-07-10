@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Page - MIDAS</title>
+  <link rel="stylesheet" href="/style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style>
+/* ─── MYPAGE 전용 스타일 ─── */
+ /* 글자 크기 키우기 */
+    .recent-list h2 {
+      font-size: 1rem;    /* 제목 크기 */
+    }
+    .recent-list a.loc-item {
+      display: block;       /* 클릭 영역 넓히기 */
+      font-size: 1.2rem;    /* 항목 글자 크기 */
+      padding: 0.5rem 0;    /* 위아래 여백 */
+      color: #333;          /* 눈에 잘 띄는 색 */
+    }
+    .recent-list a.loc-item:hover {
+      background: #f0f0f0;  /* 호버 효과 */
+    }
+/* 1) .hero 내부에서 컨테이너를 화면 너비만큼 늘리기 */
+body.mypage-page .hero {
+  margin-top: 15rem;
+  display: flex;            /* flex 컨테이너로 유지 */
+  flex-direction: column;   /* 세로 방향 레이아웃 */
+  align-items: stretch;     /* 가로로 꽉 채우기 */
+  justify-content: flex-start; /* 세로 정렬은 기본(위쪽)으로 */
+  padding: 2rem 1rem;       /* 상하 2rem, 좌우 1rem 여백 */
+}
+
+/* 2) 컨테이너 너비 및 flex 배치 재정의 */
+body.mypage-page .mypage-container {
+  width: 100%;              /* .hero 안에서 100% 너비 */
+  max-width: 1300px;        /* 필요 시 최대 너비 제한 */
+  margin: 0 auto;           /* 중앙 정렬 */
+  display: flex;            /* 좌우로 나란히 */
+  gap: 2rem;                /* 요소 사이 간격 */
+  padding: 2rem 0;          /* 위/아래 여백 */
+}
+
+/* 3) 왼쪽 최근 목록: flex 1 파트 */
+body.mypage-page .recent-list {
+  flex: 1;                  /* 여유 공간 1파트 */
+  min-width: 200px;         /* 최소 너비 */
+}
+
+/* 4) 제목과 항목 텍스트 색상, 가독성 확보 */
+body.mypage-page .recent-list h1,
+body.mypage-page .recent-list a {
+  color: #333 !important;   /* 어두운 회색으로 통일 */
+}
+
+/* 5) 목록 기본 스타일 */
+body.mypage-page .recent-list ul {
+  list-style: none;
+  padding: 0;
+}
+body.mypage-page .recent-list li {
+  margin-bottom: 0.5rem;
+}
+body.mypage-page .recent-list a {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* 6) 오른쪽 지도: flex 2 파트 */
+body.mypage-page .map-wrapper {
+  flex: 2;                  /* 왼쪽보다 2배 넓게 */
+  min-width: 0;             /* flex 아이템 축소 허용 */
+  height: 800px;            /* 고정 높이 */
+}
+
+/* 7) #map 내부 꽉 채우기 */
+body.mypage-page #map {
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+
+  </style>
+</head>
+
+<body class="mypage-page">
+  <%- include('nav') %>
+
+  <main>
+    <section class="hero">
+      <div class="mypage-container">
+        <!-- 왼쪽: 최근 위치 목록 -->
+        <div class="recent-list">
+          <h1>최근 위치 목록</h1>
+          <ul>
+            <% recentLocations.forEach((loc, idx) => { %>
+              <li>
+                <a href="#" class="loc-item"
+                 data-lat="<%= loc.lat %>" 
+                 data-lng="<%= loc.lng %>">
+                 <%= idx + 1 %>. <%= formatDate(loc.timestamp) %> — [<%= loc.lat %>, <%= loc.lng %>]
+                 </a>
+               </li>
+              <% }) %>
+                    
+          </ul>
+        </div>
+        <!-- 오른쪽: 지도 -->
+        <div class="map-wrapper">
+          <div id="map"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <% if (recentLocations.length > 0) { %>
+  <!-- 네이버 지도 API -->
+  <script src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=g3fd40yb47"></script>
+  <script>
+    // 초기 지도 설정: 첫 번째 위치 기준
+    const defaultLat = <%= recentLocations[0].lat %>;
+    const defaultLng = <%= recentLocations[0].lng %>;
+    const map = new naver.maps.Map('map', {
+      center: new naver.maps.LatLng(defaultLat, defaultLng),
+      zoom: 14
+    });
+    const marker = new naver.maps.Marker({
+      position: new naver.maps.LatLng(defaultLat, defaultLng),
+      map: map,
+      title: '선택된 위치'
+    });
+    // 목록 클릭 시 지도와 마커 업데이트
+    document.querySelectorAll('.loc-item').forEach(item => {
+      item.addEventListener('click', function(e) {
+        e.preventDefault();
+        const lat = parseFloat(this.dataset.lat);
+        const lng = parseFloat(this.dataset.lng);
+        const newPos = new naver.maps.LatLng(lat, lng);
+        map.setCenter(newPos);
+        marker.setPosition(newPos);
+      });
+    });
+  </script>
+  <% } %>
+</body>
+
+</html>
