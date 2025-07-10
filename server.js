@@ -340,3 +340,43 @@ app.post('/comments', isLoggedIn, (req, res) => {
     }
   );
 });
+
+// mypage 라우트
+// server.js (또는 app.js) 어딘가
+app.locals.formatDate = date => {
+  const d = new Date(date);
+  // "YYYY-MM-DD HH:MM:SS" 형태로 포맷
+  return d.toISOString().slice(0,19).replace('T',' ');
+};
+
+app.get('/mypage', isLoggedIn, (req, res) => {
+  const sql = `
+    SELECT latitude, longitude, timestamp
+    FROM event
+    ORDER BY timestamp DESC
+    LIMIT 10
+  `;
+  connection.query(sql, (err, results) => {
+    if (err) {
+      console.error('최근 위치 조회 오류:', err);
+      return res.send('최근 위치를 불러오는 데 실패했습니다.');
+    }
+    // 결과를 뷰에 맞게 가공
+    const recentLocations = results.map(row => ({
+      lat: row.latitude,
+      lng: row.longitude,
+      timestamp: row.timestamp
+    }));
+    // 맵에 표시할 최신 위치
+    const first = recentLocations[0] || {};
+    const lat = first.lat || null;
+    const lng = first.lng || null;
+
+    res.render('mypage', {
+      loginUserName: req.session.loginUserName,
+      lat,
+      lng,
+      recentLocations
+    });
+  });
+});
