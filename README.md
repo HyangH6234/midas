@@ -26,7 +26,7 @@
 - **Arduino (ESP32, Flex Sensor, MPU-9250, GPS)**
 - **Server (Node.js, MySQL, Firebase, Flask)**
 - **Mobile App (Flutter, Geolocator, flutter_blue_plus)**
-
+- **Web (Node.js, Express, HTML)** 
 ---
 
 ---
