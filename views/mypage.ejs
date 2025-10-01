@@ -6,144 +6,242 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>My Page - MIDAS</title>
   <link rel="stylesheet" href="/style.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+  <script type="text/javascript"
+    src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=g3fd40yb47&submodules=geocoder"></script>
+  
   <style>
-/* ─── MYPAGE 전용 스타일 ─── */
- /* 글자 크기 키우기 */
-    .recent-list h2 {
-      font-size: 1rem;    /* 제목 크기 */
+    /* ─── MYPAGE 전용 스타일 (색상 테마 수정) ─── */
+    body.mypage-page {
+      background-color: #f8f9fa; /* 배경을 밝은 회색으로 */
     }
-    .recent-list a.loc-item {
-      display: block;       /* 클릭 영역 넓히기 */
-      font-size: 1.2rem;    /* 항목 글자 크기 */
-      padding: 0.5rem 0;    /* 위아래 여백 */
-      color: #333;          /* 눈에 잘 띄는 색 */
+
+    .mypage-container {
+      width: 90%;
+      max-width: 1600px;
+      margin: 2rem auto;
     }
-    .recent-list a.loc-item:hover {
-      background: #f0f0f0;  /* 호버 효과 */
+    
+    .section-title {
+      color: #1f2937; /* 텍스트 색상을 어둡게 */
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
     }
-/* 1) .hero 내부에서 컨테이너를 화면 너비만큼 늘리기 */
-body.mypage-page .hero {
-  margin-top: 15rem;
-  display: flex;            /* flex 컨테이너로 유지 */
-  flex-direction: column;   /* 세로 방향 레이아웃 */
-  align-items: stretch;     /* 가로로 꽉 채우기 */
-  justify-content: flex-start; /* 세로 정렬은 기본(위쪽)으로 */
-  padding: 2rem 1rem;       /* 상하 2rem, 좌우 1rem 여백 */
-}
 
-/* 2) 컨테이너 너비 및 flex 배치 재정의 */
-body.mypage-page .mypage-container {
-  width: 100%;              /* .hero 안에서 100% 너비 */
-  max-width: 1300px;        /* 필요 시 최대 너비 제한 */
-  margin: 0 auto;           /* 중앙 정렬 */
-  display: flex;            /* 좌우로 나란히 */
-  gap: 2rem;                /* 요소 사이 간격 */
-  padding: 2rem 0;          /* 위/아래 여백 */
-}
+    /* 상단: 최근 위치 기록 */
+    .recent-locations-section {
+      width: 100%;
+      margin-bottom: 3rem;
+    }
+    .swiper { width: 100%; padding: 1rem 0; }
+    .swiper-slide { height: auto; }
+    .location-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border-left: 5px solid #2dd4bf; /* ✅ 포인트 색상 (민트) */
+      height: 100%;
+      padding: 1.5rem;
+    }
+    .location-card:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1); }
+    .location-card .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; }
+    .location-card .location-number { background: #2dd4bf; color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; }
+    .location-card .timestamp { color: #6b7280; font-size: 0.9rem; text-align: right; }
+    .location-card .coordinates { color: #374151; font-size: 0.9rem; margin-top: 1rem; }
 
-/* 3) 왼쪽 최근 목록: flex 1 파트 */
-body.mypage-page .recent-list {
-  flex: 1;                  /* 여유 공간 1파트 */
-  min-width: 200px;         /* 최소 너비 */
-}
+    /* 하단: 자주 가는 위치 + 지도 */
+    .bottom-content-wrapper {
+      display: flex;
+      gap: 2rem;
+      align-items: stretch;
+    }
 
-/* 4) 제목과 항목 텍스트 색상, 가독성 확보 */
-body.mypage-page .recent-list h1,
-body.mypage-page .recent-list a {
-  color: #333 !important;   /* 어두운 회색으로 통일 */
-}
+    /* 왼쪽: 자주 가는 위치 */
+    .frequent-locations-list {
+      flex: 2;
+    }
+    .frequent-card {
+      /* ✅ 지도와 어울리는 세련된 남색 계열로 변경 */
+      background: linear-gradient(135deg, #2A3A5B 0%, #1C273E 100%);
+      border-radius: 12px;
+      padding: 1.5rem;
+      color: white;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      margin-bottom: 1rem;
+    }
+    .frequent-card:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2); }
+    .frequent-card h3 { margin: 0 0 0.5rem 0; font-size: 1.1rem; }
+    .frequent-card p { margin: 0; opacity: 0.8; }
+    .frequent-card .visit-count { background: rgba(255, 255, 255, 0.1); padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.8rem; margin-top: 0.75rem; display: inline-block; }
 
-/* 5) 목록 기본 스타일 */
-body.mypage-page .recent-list ul {
-  list-style: none;
-  padding: 0;
-}
-body.mypage-page .recent-list li {
-  margin-bottom: 0.5rem;
-}
-body.mypage-page .recent-list a {
-  text-decoration: none;
-  cursor: pointer;
-}
+    /* 오른쪽: 지도 */
+    .map-wrapper {
+      flex: 3;
+      min-height: 600px;
+    }
+    #map { width: 100%; height: 100%; border-radius: 12px; }
 
-/* 6) 오른쪽 지도: flex 2 파트 */
-body.mypage-page .map-wrapper {
-  flex: 2;                  /* 왼쪽보다 2배 넓게 */
-  min-width: 0;             /* flex 아이템 축소 허용 */
-  height: 800px;            /* 고정 높이 */
-}
-
-/* 7) #map 내부 꽉 채우기 */
-body.mypage-page #map {
-  width: 100%;
-  height: 100%;
-  border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-}
-
-
+    /* 반응형 */
+    @media (max-width: 1024px) {
+      .bottom-content-wrapper { flex-direction: column; }
+    }
   </style>
 </head>
 
 <body class="mypage-page">
   <%- include('nav') %>
 
-  <main>
-    <section class="hero">
-      <div class="mypage-container">
-        <!-- 왼쪽: 최근 위치 목록 -->
-        <div class="recent-list">
-          <h1>최근 위치 목록</h1>
-          <ul>
-            <% recentLocations.forEach((loc, idx) => { %>
-              <li>
-                <a href="#" class="loc-item"
-                 data-lat="<%= loc.lat %>" 
-                 data-lng="<%= loc.lng %>">
-                 <%= idx + 1 %>. <%= formatDate(loc.timestamp) %> — [<%= loc.lat %>, <%= loc.lng %>]
-                 </a>
-               </li>
-              <% }) %>
-                    
-          </ul>
-        </div>
-        <!-- 오른쪽: 지도 -->
-        <div class="map-wrapper">
-          <div id="map"></div>
-        </div>
-      </div>
-    </section>
-  </main>
+  <div class="mypage-container">
 
-  <% if (recentLocations.length > 0) { %>
-  <!-- 네이버 지도 API -->
-  <script src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=g3fd40yb47"></script>
-  <script>
-    // 초기 지도 설정: 첫 번째 위치 기준
-    const defaultLat = <%= recentLocations[0].lat %>;
-    const defaultLng = <%= recentLocations[0].lng %>;
-    const map = new naver.maps.Map('map', {
-      center: new naver.maps.LatLng(defaultLat, defaultLng),
-      zoom: 14
-    });
-    const marker = new naver.maps.Marker({
-      position: new naver.maps.LatLng(defaultLat, defaultLng),
-      map: map,
-      title: '선택된 위치'
-    });
-    // 목록 클릭 시 지도와 마커 업데이트
-    document.querySelectorAll('.loc-item').forEach(item => {
-      item.addEventListener('click', function(e) {
-        e.preventDefault();
-        const lat = parseFloat(this.dataset.lat);
-        const lng = parseFloat(this.dataset.lng);
-        const newPos = new naver.maps.LatLng(lat, lng);
-        map.setCenter(newPos);
-        marker.setPosition(newPos);
+    <section class="recent-locations-section">
+      <h2 class="section-title">
+        <i class="fas fa-clock"></i> 최근 위치 기록
+      </h2>
+      <% if (locationsData && locationsData.length > 0) { %>
+        <div class="swiper">
+          <div class="swiper-wrapper">
+            <% locationsData.forEach((loc, idx) => { %>
+              <div class="swiper-slide">
+                <div class="location-card" data-latitude="<%= loc.latitude %>" data-longitude="<%= loc.longitude %>">
+                  <div class="card-header">
+                    <div class="location-number"><%= idx + 1 %></div>
+                    <div class="timestamp">
+                      <i class="fas fa-calendar-alt"></i>
+                      <%= formatDate(loc.timestamp).split(' ')[0] %><br>
+                      <small><%= formatDate(loc.timestamp).split(' ')[1] %></small>
+                    </div>
+                  </div>
+                  <div class="coordinates">
+                    <i class="fas fa-map-pin"></i>
+                    <span id="recent-address-<%= idx %>">주소 변환 중...</span>
+                  </div>
+                </div>
+              </div>
+            <% }) %>
+          </div>
+          <div class="swiper-button-next"></div>
+          <div class="swiper-button-prev"></div>
+          <div class="swiper-pagination"></div>
+        </div>
+      <% } else { %>
+        <p>최근 위치 기록이 없습니다.</p>
+      <% } %>
+    </section>
+
+    <div class="bottom-content-wrapper">
+      <aside class="frequent-locations-list">
+        <h2 class="section-title">
+          <i class="fas fa-star"></i> 자주 가는 위치
+        </h2>
+        <% if (locationsData && locationsData.length > 0) { %>
+          <% locationsData.slice(0, 5).forEach((loc, idx) => { %>
+            <div class="frequent-card" data-latitude="<%= loc.latitude %>" data-longitude="<%= loc.longitude %>">
+              <h3><i class="fas fa-map-marker-alt"></i> 자주 방문한 장소 #<%= idx + 1 %></h3>
+              <p id="frequent-address-<%= idx %>" style="font-size: 0.9rem; opacity: 0.9;">
+                주소 변환 중...
+              </p>
+              <div class="visit-count">
+                <i class="fas fa-chart-line"></i> 1회 방문
+              </div>
+            </div>
+          <% }) %>
+        <% } else { %>
+          <p>데이터가 부족하여 자주 가는 위치를 표시할 수 없습니다.</p>
+        <% } %>
+      </aside>
+
+      <div class="map-wrapper">
+        <div id="map"></div>
+      </div>
+    </div>
+  </div>
+
+  <% if (locationsData && locationsData.length > 0) { %>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script>
+      // ✅ 3. 모든 JS 로직을 여기에 통합 및 수정
+
+      // 서버에서 전달받은 위치 데이터를 JS 변수로 받기
+      const locationsData = <%- JSON.stringify(locationsData) %>;
+
+      // 지도 초기화
+      const map = new naver.maps.Map('map', {
+        center: new naver.maps.LatLng(locationsData[0].latitude, locationsData[0].longitude),
+        zoom: 15,
       });
-    });
-  </script>
+
+      // 모든 위치에 마커 생성 및 주소 변환 실행
+      locationsData.forEach((loc, index) => {
+        // 마커 생성
+        new naver.maps.Marker({
+          position: new naver.maps.LatLng(loc.latitude, loc.longitude),
+          map: map,
+          icon: {
+            content: `<div style="background: #2A3A5B; color: white; font-size: 12px; font-weight: bold; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.3);">${index + 1}</div>`,
+            anchor: new naver.maps.Point(12, 12)
+          }
+        });
+
+        // 리버스 지오코딩 실행
+        naver.maps.Service.reverseGeocode({
+          coords: new naver.maps.Point(loc.longitude, loc.latitude),
+          orders: 'roadaddr,addr'
+        }, function(status, response) {
+          if (status !== naver.maps.Service.Status.OK) {
+            return console.error('Geocoding failed for index', index);
+          }
+          const result = response.v2;
+          const address = result.address.jibunAddress || result.address.roadAddress || '주소 정보 없음';
+          
+          const frequentEl = document.getElementById('frequent-address-' + index);
+          if (frequentEl) frequentEl.innerText = address;
+
+          const recentEl = document.getElementById('recent-address-' + index);
+          if (recentEl) recentEl.innerText = address;
+        });
+      });
+
+      // 스와이퍼 초기화
+      const swiper = new Swiper('.swiper', {
+        slidesPerView: 1.5,
+        spaceBetween: 15,
+        navigation: {
+          nextEl: '.swiper-button-next',
+          prevEl: '.swiper-button-prev',
+        },
+        pagination: {
+          el: '.swiper-pagination',
+          clickable: true,
+        },
+        breakpoints: {
+          768: { slidesPerView: 2 },
+          1024: { slidesPerView: 3 },
+          1280: { slidesPerView: 4 }
+        }
+      });
+      
+      // 카드 클릭 시 지도 이동 이벤트
+      document.querySelectorAll('.location-card, .frequent-card').forEach(card => {
+        card.addEventListener('click', function() {
+          const lat = parseFloat(this.dataset.latitude);
+          const lng = parseFloat(this.dataset.longitude);
+          if (!isNaN(lat) && !isNaN(lng)) {
+            map.panTo(new naver.maps.LatLng(lat, lng), { duration: 500 });
+          }
+        });
+      });
+    </script>
   <% } %>
 </body>
 

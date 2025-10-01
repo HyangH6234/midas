@@ -2,40 +2,59 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>로그인 - MIDAS</title>
-  <link rel="stylesheet" href="/style.css">
-  <script src="/finisher-header.es5.min.js" defer></script>
-  <script defer>
-    document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOMContentLoaded, FinisherHeader=', window.FinisherHeader);
-    console.log('container=', document.querySelector('.finisher-header'));
-      new FinisherHeader({
-        selector:'.finisher-header',
-        count: 6,
-        size: { min: 1100, max: 1300, pulse: 0 },
-        speed: { x: { min: 0.1, max: 0.3 }, y: { min: 0.1, max: 0.3 } },
-        colors: {
-          background: "#9138e5",
-          particles: ["#6bd6ff","#ffcb57","#ff333d"]
-        },
-        blending: "overlay",
-        opacity: { center: 1, edge: 0.1 },
-        skew: -2,
-        shapes: ["c"]
-      });
-    });
-  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="login-page">
-  <div class="finisher-header">
-    <div class="form-container">
-      <h2>로그인</h2>
-      <form action="/login" method="POST">
-        <input type="text" name="userId" placeholder="아이디" required>
-        <input type="password" name="pw" placeholder="비밀번호" required>
-      <button type="submit">로그인</button>
-      </form>
-      <p><a href="/join">회원가입</a></p>
+<body class="bg-base min-h-screen">
+  <div class="flex min-h-screen">
+    <!-- 왼쪽: 상단(로고) + 중앙(폼) + 하단(footer) 컬럼 구조 -->
+    <div class="flex flex-col w-full lg:w-1/2 bg-white relative min-h-screen">
+      <!-- 로고: 항상 상단 -->
+      <div class="w-full flex justify-center pt-12 pb-4">
+        <img src="/logo.png" alt="MIDAS 로고" class="w-32" />
+      </div>
+      <!-- '중앙 내용'을 flex-1로 세로/가로 중앙 정렬 -->
+      <div class="flex-1 flex flex-col items-center justify-center space-y-8">
+        <div class="text-3xl font-bold text-gray-900 text-center">MIDAS 이용하기</div>
+        <span class="text-base text-gray-600 text-center block">
+          걱정하는 시간이 더 길었던 당신에게 필요한 해답.<br>
+          MIDAS가 함께 하겠습니다.
+        </span>
+        <div class="w-full max-w-[400px] space-y-4 py-5">
+          <form action="/login" method="POST" class="space-y-4">
+            <input
+              placeholder="ID를 입력하세요"
+              type="text"
+              autocomplete="username"
+              name="userId"
+              required
+              class="w-full h-11 py-2 px-3 rounded-lg border border-gray-200 focus:border-indigo-500 outline-none"
+            >
+            <input
+              placeholder="비밀번호 입력"
+              type="password"
+              autocomplete="current-password"
+              name="pw"
+              required
+              class="w-full h-11 py-2 px-3 rounded-lg border border-gray-200 focus:border-indigo-500 outline-none"
+            >
+            <button
+              type="submit"
+              class="w-full h-11 bg-indigo-600 text-white rounded-lg font-semibold transition hover:bg-indigo-500 mb-2"
+            >로그인</button>
+          </form>
+          <a href="/join" class="text-indigo-600 underline text-sm block text-center mt-2">회원가입</a>
+        </div>
+      </div>
+      <!-- 왼쪽 하단 고정 바닥글(footer) -->
+      <footer class="absolute bottom-0 left-0 w-full py-4 bg-gray-100 text-gray-400 text-center text-sm">
+        &copy; 2025 MIDAS | Contact: info@midas.com<br> All rights reserved.
+      </footer>
+    </div>
+    <!-- 오른쪽: 이미지 -->
+    <div class="hidden lg:block relative w-1/2 min-h-screen">
+      <img src="/img2.png" class="absolute inset-0 w-full h-full object-cover" alt="배경" />
     </div>
   </div>
 </body>
